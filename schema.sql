@@ -2,7 +2,6 @@ DROP TABLE IF EXISTS image;
 
 CREATE TABLE image (
 	id SERIAL PRIMARY KEY,
-	image_uri_original TEXT,
 	image_uri_edited TEXT,
 	image_filters TEXT,
 	image_caption TEXT,
@@ -11,3 +10,4 @@ CREATE TABLE image (
 	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
