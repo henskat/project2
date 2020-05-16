@@ -28,9 +28,17 @@ function imageToObject(pic) {
 		updated_at: pic.updated_at,
 	};
 }
-app.get('/image/', (request, response) => {
-	const query = 'SELECT id, image_uri_edited, image_filters, image_caption, image_tags, created_at, updated_at FROM image WHERE is_deleted = 0 AND image_uri_edited != ""';
-	connection.query(query,(error,rows) => {
+app.get('/image/:filter', (request, response) => {
+	let query;
+	let params;
+	if(request.params.filter !== "none") {
+		     params = [request.params.filter];
+		     query = 'SELECT id, image_uri_edited, image_filters, image_caption, image_tags, created_at, updated_at FROM image WHERE is_deleted = 0 AND image_uri_edited != "" AND image_tags = ?';
+	} else {
+		params = [];
+		query = 'SELECT id, image_uri_edited, image_filters, image_caption, image_tags, created_at, updated_at FROM image WHERE is_deleted = 0 AND image_uri_edited != ""';
+	}
+	connection.query(query, params, (error,rows) => {
 		response.send({
 			ok:true,
 			image: rows.map(imageToObject),
