@@ -19,7 +19,8 @@ function imageToObject(pic) {
 	const dataUrl = 'data:image/png;base64,' + base64;
 	return {
 		id: pic.id,
-		image_uri_edited: dataUrl,
+		image_uri_original: dataUrl,
+		image_uri_edited: pic.image_uri_edited,
 		image_filters: pic.image_filters,
 		image_caption: pic.image_caption,
 		image_tags: pic.image_tags,
@@ -28,7 +29,7 @@ function imageToObject(pic) {
 	};
 }
 app.get('/image/', (request, response) => {
-	const query = 'SELECT id, image_uri_edited, image_filters, image_caption, image_tags, created_at, updated_at FROM image WHERE is_deleted = 0';
+	const query = 'SELECT id, image_uri_edited, image_filters, image_caption, image_tags, created_at, updated_at FROM image WHERE is_deleted = 0 AND image_uri_edited != ""';
 	connection.query(query,(error,rows) => {
 		response.send({
 			ok:true,
