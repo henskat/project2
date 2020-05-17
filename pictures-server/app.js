@@ -24,6 +24,7 @@ function imageToObject(pic) {
 		image_filters: pic.image_filters,
 		image_caption: pic.image_caption,
 		image_tags: pic.image_tags,
+		image_fit: pic.image_fit,
 		created_at: pic.created_at,
 		updated_at: pic.updated_at,
 	};
@@ -33,10 +34,10 @@ app.get('/image/:filter', (request, response) => {
 	let params;
 	if(request.params.filter !== "none") {
 		     params = [request.params.filter];
-		     query = 'SELECT id, image_uri_edited, image_filters, image_caption, image_tags, created_at, updated_at FROM image WHERE is_deleted = 0 AND image_uri_edited != "" AND image_tags = ?';
+		     query = 'SELECT id, image_uri_edited, image_filters, image_caption, image_tags, created_at, updated_at, image_fit FROM image WHERE is_deleted = 0 AND image_uri_edited != "" AND image_tags = ? ORDER BY updated_at DESC';
 	} else {
 		params = [];
-		query = 'SELECT id, image_uri_edited, image_filters, image_caption, image_tags, created_at, updated_at FROM image WHERE is_deleted = 0 AND image_uri_edited != ""';
+		query = 'SELECT id, image_uri_edited, image_filters, image_caption, image_tags, created_at, updated_at, image_fit FROM image WHERE is_deleted = 0 AND image_uri_edited != "" ORDER BY updated_at DESC';
 	}
 	connection.query(query, params, (error,rows) => {
 		response.send({
@@ -47,8 +48,8 @@ app.get('/image/:filter', (request, response) => {
 });
 
 app.post('/image/', (request, response) => {
-	const query = 'INSERT INTO image(image_uri_edited, image_filters, image_caption, image_tags) VALUES (?,?,?,?)';
-	const params = [request.body.image_uri_edited, request.body.image_filters, request.body.image_caption, request.body.image_tags];
+	const query = 'INSERT INTO image(image_uri_edited, image_filters, image_fit, image_caption, image_tags) VALUES (?,?,?,?,?)';
+	const params = [request.body.image_uri_edited, request.body.image_filters, request.body.image_fit,  request.body.image_caption, request.body.image_tags];
 	connection.query(query, params, (error, result) => {
 		response.send({
 			ok: true,
@@ -73,8 +74,8 @@ app.post('/upload/', function(req, res) {
 });
 
 app.patch('/image/:id', (request, response) => {
-	const query = 'UPDATE image SET image_uri_edited = ?, image_filters = ?, image_caption = ?, image_tags = ?, updated_at = CURRENT_TIMESTAMP where id = ?';
-	const params = [request.body.image_uri_edited, request.body.image_filters,request.body.image_caption, request.body.image_tags, request.params.id];
+	const query = 'UPDATE image SET image_uri_edited = ?, image_filters = ?, image_caption = ?, image_tags = ?, image_fit = ?,  updated_at = CURRENT_TIMESTAMP where id = ?';
+	const params = [request.body.image_uri_edited, request.body.image_filters,request.body.image_caption, request.body.image_tags, request.body.image_fit, request.params.id];
 	connection.query(query, params, (error,result) => {
 		response.send({
 			ok: true,
